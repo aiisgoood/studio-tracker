@@ -132,10 +132,10 @@ export function BoardPage({
                     <motion.span
                       layoutId="project-pill"
                       transition={{ type: "spring", stiffness: 500, damping: 38 }}
-                      className="absolute inset-0 -z-10 rounded-full bg-primary"
+                      className="absolute inset-0 rounded-full bg-primary"
                     />
                   )}
-                  {p.name}
+                  <span className="relative z-10">{p.name}</span>
                 </motion.button>
                 {active && (
                   <DropdownMenu>
