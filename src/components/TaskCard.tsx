@@ -56,8 +56,10 @@ export function TaskCard({
         onOpen(task);
       }}
       className={[
-        "group relative cursor-grab touch-none rounded-2xl border p-3 transition-shadow active:cursor-grabbing",
-        isDragging ? "shadow-lg" : "shadow-sm hover:shadow-md",
+        "group relative cursor-grab touch-none rounded-2xl border p-3 transition-all duration-200 active:cursor-grabbing",
+        isDragging
+          ? "scale-[1.02] rotate-[0.6deg] shadow-xl"
+          : "shadow-sm hover:-translate-y-0.5 hover:border-line-strong hover:shadow-md",
         isDone
           ? "border-[var(--color-sage-line)] bg-sage-bg"
           : "border-line bg-surface",

@@ -3,123 +3,131 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* ============ Linen & slate theme (light) ============ */
+/* ============================================================
+   Monochrome theme — pure black & white with neutral grays.
+   Functional color (red / amber / green) is reserved strictly
+   for status & attention: priorities, due dates, idea stages
+   and destructive actions. Everything structural is grayscale.
+   ============================================================ */
+
+/* ---------------- Light: paper white ---------------- */
 :root {
   --radius: 0.9rem;
 
   /* shadcn semantic tokens */
-  --background: #efede6;
-  --foreground: #2a3a33;
+  --background: #ffffff;
+  --foreground: #0a0a0a;
   --card: #ffffff;
-  --card-foreground: #2a3a33;
+  --card-foreground: #0a0a0a;
   --popover: #ffffff;
-  --popover-foreground: #2a3a33;
-  --primary: #3f5560;
+  --popover-foreground: #0a0a0a;
+  --primary: #0a0a0a;
   --primary-foreground: #ffffff;
-  --secondary: #f6f3ec;
-  --secondary-foreground: #2a3a33;
-  --muted: #f1efe8;
-  --muted-foreground: #8c887c;
-  --accent: #e3ecef;
-  --accent-foreground: #345059;
-  --destructive: #c0503a;
+  --secondary: #f4f4f5;
+  --secondary-foreground: #0a0a0a;
+  --muted: #f4f4f5;
+  --muted-foreground: #71717a;
+  --accent: #f4f4f5;
+  --accent-foreground: #0a0a0a;
+  --destructive: #dc2626;
   --destructive-foreground: #ffffff;
-  --border: #e2dcce;
-  --input: #e2dcce;
-  --ring: #3f5560;
+  --border: #e5e5e5;
+  --input: #e5e5e5;
+  --ring: #0a0a0a;
 
-  --sidebar: #ffffff;
-  --sidebar-foreground: #2a3a33;
-  --sidebar-primary: #3f5560;
+  --sidebar: #fafafa;
+  --sidebar-foreground: #0a0a0a;
+  --sidebar-primary: #0a0a0a;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #e3ecef;
-  --sidebar-accent-foreground: #345059;
-  --sidebar-border: #e2dcce;
-  --sidebar-ring: #3f5560;
+  --sidebar-accent: #f0f0f0;
+  --sidebar-accent-foreground: #0a0a0a;
+  --sidebar-border: #e5e5e5;
+  --sidebar-ring: #0a0a0a;
 
-  /* extra aliases used by existing markup */
+  /* extra aliases used by existing markup (kept monochrome) */
   --surface: #ffffff;
-  --surface-2: #f6f3ec;
-  --line: #e2dcce;
-  --line-strong: #d3ccba;
-  --ink: #2a3a33;
-  --primary-hover: #344852;
+  --surface-2: #f4f4f5;
+  --line: #e5e5e5;
+  --line-strong: #d4d4d4;
+  --ink: #0a0a0a;
+  --primary-hover: #262626;
 
-  /* domain accents */
-  --todo: #4a6670;
-  --doing: #c98a2b;
-  --done: #5c8a6f;
-  --amber-bg: #faf1dd;
-  --amber-ink: #7a5a1e;
-  --amber-line: #eedfbc;
-  --sage-bg: #e4eeea;
-  --sage-ink: #2f5249;
-  --sage-line: #c8dcd5;
-  --slate-bg: #e3ecef;
-  --slate-ink: #345059;
-  --slate-line: #cfe0e5;
-  --prio-low: #5c8a6f;
-  --prio-medium: #c98a2b;
-  --prio-urgent: #c0503a;
-  --danger-bg: #f7e6e1;
-  --danger-ink: #9c4327;
+  /* domain accents — "todo" and "slate" are neutral gray; only
+     doing(amber), done(green) and urgent(red) carry real color. */
+  --todo: #a1a1aa;
+  --doing: #d97706;
+  --done: #16a34a;
+  --amber-bg: #fdf4e7;
+  --amber-ink: #b45309;
+  --amber-line: #f6e2bf;
+  --sage-bg: #ecf7ef;
+  --sage-ink: #15803d;
+  --sage-line: #c8e9d2;
+  --slate-bg: #f4f4f5;
+  --slate-ink: #18181b;
+  --slate-line: #e4e4e7;
+  --prio-low: #16a34a;
+  --prio-medium: #d97706;
+  --prio-urgent: #dc2626;
+  --danger-bg: #fdecea;
+  --danger-ink: #b91c1c;
 }
 
-/* ============ Warm charcoal theme (dark) ============ */
+/* ---------------- Dark: true black ---------------- */
 .dark {
-  --background: #1e1c18;
-  --foreground: #ece6d9;
-  --card: #2a2722;
-  --card-foreground: #ece6d9;
-  --popover: #2a2722;
-  --popover-foreground: #ece6d9;
-  --primary: #6e94a3;
-  --primary-foreground: #14242b;
-  --secondary: #322e28;
-  --secondary-foreground: #ece6d9;
-  --muted: #322e28;
-  --muted-foreground: #a8a294;
-  --accent: #26333a;
-  --accent-foreground: #9fc2ce;
-  --destructive: #e0795f;
-  --destructive-foreground: #1e1c18;
-  --border: #3a362f;
-  --input: #3a362f;
-  --ring: #6e94a3;
+  --background: #0a0a0a;
+  --foreground: #fafafa;
+  --card: #131313;
+  --card-foreground: #fafafa;
+  --popover: #131313;
+  --popover-foreground: #fafafa;
+  --primary: #fafafa;
+  --primary-foreground: #0a0a0a;
+  --secondary: #1c1c1c;
+  --secondary-foreground: #fafafa;
+  --muted: #1c1c1c;
+  --muted-foreground: #a1a1aa;
+  --accent: #1f1f1f;
+  --accent-foreground: #fafafa;
+  --destructive: #f87171;
+  --destructive-foreground: #0a0a0a;
+  --border: #272727;
+  --input: #2a2a2a;
+  --ring: #d4d4d4;
 
-  --sidebar: #2a2722;
-  --sidebar-foreground: #ece6d9;
-  --sidebar-primary: #6e94a3;
-  --sidebar-primary-foreground: #14242b;
-  --sidebar-accent: #26333a;
-  --sidebar-accent-foreground: #9fc2ce;
-  --sidebar-border: #3a362f;
-  --sidebar-ring: #6e94a3;
+  --sidebar: #0d0d0d;
+  --sidebar-foreground: #fafafa;
+  --sidebar-primary: #fafafa;
+  --sidebar-primary-foreground: #0a0a0a;
+  --sidebar-accent: #1f1f1f;
+  --sidebar-accent-foreground: #fafafa;
+  --sidebar-border: #272727;
+  --sidebar-ring: #d4d4d4;
 
-  --surface: #2a2722;
-  --surface-2: #322e28;
-  --line: #3a362f;
-  --line-strong: #4a4539;
-  --ink: #ece6d9;
-  --primary-hover: #7fa6b5;
+  --surface: #131313;
+  --surface-2: #1c1c1c;
+  --line: #272727;
+  --line-strong: #3a3a3a;
+  --ink: #fafafa;
+  --primary-hover: #e4e4e7;
 
-  --todo: #8fb2c0;
-  --doing: #e0a64a;
-  --done: #7fb592;
-  --amber-bg: #3a2c1c;
-  --amber-ink: #e6b566;
-  --amber-line: #4a3a22;
-  --sage-bg: #22312a;
-  --sage-ink: #8fcba8;
-  --sage-line: #34453a;
-  --slate-bg: #26333a;
-  --slate-ink: #9fc2ce;
-  --slate-line: #35464d;
-  --prio-low: #7fb592;
-  --prio-medium: #e0a64a;
-  --prio-urgent: #e0795f;
-  --danger-bg: #3a241c;
-  --danger-ink: #e0795f;
+  --todo: #71717a;
+  --doing: #fbbf24;
+  --done: #4ade80;
+  --amber-bg: #2a1f0c;
+  --amber-ink: #fbbf24;
+  --amber-line: #45340f;
+  --sage-bg: #0f2417;
+  --sage-ink: #4ade80;
+  --sage-line: #1c3b29;
+  --slate-bg: #1f1f1f;
+  --slate-ink: #fafafa;
+  --slate-line: #2e2e2e;
+  --prio-low: #4ade80;
+  --prio-medium: #fbbf24;
+  --prio-urgent: #f87171;
+  --danger-bg: #2a1212;
+  --danger-ink: #f87171;
 }
 
 @theme inline {

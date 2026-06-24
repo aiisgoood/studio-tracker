@@ -45,7 +45,7 @@ export function SettingsPage({
           <div>
             <p className="text-sm font-medium text-ink">Theme</p>
             <p className="text-xs text-muted-foreground">
-              {isDark ? "Warm charcoal (dark)" : "Linen (light)"}
+              {isDark ? "Black (dark)" : "White (light)"}
             </p>
           </div>
           <button

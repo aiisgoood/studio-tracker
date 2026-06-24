@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { Member } from "@/lib/types";
 import { Avatar, Icon } from "./parts";
 
@@ -48,22 +49,35 @@ export function Sidebar({
         {items.map((item) => {
           const isActive = item.id === active;
           return (
-            <button
+            <motion.button
               key={item.id}
               onClick={() => onNavigate(item.id)}
+              whileTap={{ scale: 0.97 }}
+              transition={{ type: "spring", stiffness: 500, damping: 30 }}
               className={[
                 "relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
                 isActive
-                  ? "bg-slate-bg text-slate-ink"
+                  ? "text-slate-ink"
                   : "text-muted-foreground hover:bg-surface-2 hover:text-ink",
               ].join(" ")}
             >
               {isActive && (
-                <span className="absolute left-0 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-[var(--color-slate-ink)]" />
+                <>
+                  <motion.span
+                    layoutId="nav-active-bg"
+                    transition={{ type: "spring", stiffness: 500, damping: 38 }}
+                    className="absolute inset-0 -z-10 rounded-xl bg-slate-bg"
+                  />
+                  <motion.span
+                    layoutId="nav-active-bar"
+                    transition={{ type: "spring", stiffness: 500, damping: 38 }}
+                    className="absolute left-0 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-[var(--color-slate-ink)]"
+                  />
+                </>
               )}
               <Icon name={item.icon} size={19} />
               {item.label}
-            </button>
+            </motion.button>
           );
         })}
       </nav>
@@ -71,24 +85,34 @@ export function Sidebar({
       {/* footer: user + theme */}
       <div className="space-y-2 border-t border-line p-3">
         {currentUser && (
-          <button
+          <motion.button
             onClick={onSwitchUser}
             title="Switch user"
+            whileTap={{ scale: 0.97 }}
             className="flex w-full items-center gap-2.5 rounded-xl px-2 py-2 transition-colors hover:bg-surface-2"
           >
             <Avatar member={currentUser} size={30} />
             <span className="text-sm font-medium capitalize text-ink">
               {currentUser.name}
             </span>
-          </button>
+          </motion.button>
         )}
-        <button
+        <motion.button
           onClick={onToggleTheme}
+          whileTap={{ scale: 0.97 }}
           className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-surface-2 hover:text-ink"
         >
-          <Icon name={isDark ? "sun" : "moon"} size={19} />
+          <motion.span
+            key={isDark ? "sun" : "moon"}
+            initial={{ rotate: -90, opacity: 0 }}
+            animate={{ rotate: 0, opacity: 1 }}
+            transition={{ duration: 0.25 }}
+            className="flex"
+          >
+            <Icon name={isDark ? "sun" : "moon"} size={19} />
+          </motion.span>
           {isDark ? "Light mode" : "Dark mode"}
-        </button>
+        </motion.button>
       </div>
     </div>
   );

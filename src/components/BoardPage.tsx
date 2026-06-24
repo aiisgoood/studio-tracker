@@ -9,7 +9,7 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { Priority, Project, Status, STATUSES, Task } from "@/lib/types";
 import { Column } from "./Column";
 import { NewTaskModal } from "./NewTaskModal";
@@ -117,17 +117,26 @@ export function BoardPage({
             const active = p.id === currentProjectId;
             return (
               <div key={p.id} className="flex shrink-0 items-center">
-                <button
+                <motion.button
                   onClick={() => setCurrentProjectId(p.id)}
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ type: "spring", stiffness: 500, damping: 30 }}
                   className={[
-                    "whitespace-nowrap rounded-full px-4 py-1.5 text-sm font-medium transition-colors",
+                    "relative whitespace-nowrap rounded-full px-4 py-1.5 text-sm font-medium transition-colors",
                     active
-                      ? "bg-primary text-primary-foreground"
+                      ? "text-primary-foreground"
                       : "border border-border bg-card text-muted-foreground hover:text-foreground",
                   ].join(" ")}
                 >
+                  {active && (
+                    <motion.span
+                      layoutId="project-pill"
+                      transition={{ type: "spring", stiffness: 500, damping: 38 }}
+                      className="absolute inset-0 -z-10 rounded-full bg-primary"
+                    />
+                  )}
                   {p.name}
-                </button>
+                </motion.button>
                 {active && (
                   <DropdownMenu>
                     <DropdownMenuTrigger
