@@ -244,7 +244,8 @@ export function BoardPage({
 
       {/* Comments */}
       <CommentsDialog
-        task={commentTask}
+        target={commentTask ? { kind: "task", id: commentTask.id } : null}
+        title={commentTask?.title ?? ""}
         currentUserId={currentUserId}
         onClose={() => setCommentTaskId(null)}
       />

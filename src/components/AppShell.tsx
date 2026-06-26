@@ -9,6 +9,7 @@ import * as db from "@/lib/db";
 import { Sidebar, NavItem } from "./Sidebar";
 import { BoardPage } from "./BoardPage";
 import { IdeasPage } from "./IdeasPage";
+import { IdeaUpdate } from "./IdeaDialog";
 import { TeamPage } from "./TeamPage";
 import { SettingsPage } from "./SettingsPage";
 import { WhoAreYou } from "./WhoAreYou";
@@ -42,6 +43,7 @@ export function AppShell() {
   const [currentProjectId, setCurrentProjectId] = useState<string>("");
   const [ideas, setIdeas] = useState<Idea[]>([]);
   const [commentCounts, setCommentCounts] = useState<Record<string, number>>({});
+  const [ideaCommentCounts, setIdeaCommentCounts] = useState<Record<string, number>>({});
 
   // local prefs
   useEffect(() => {
@@ -63,15 +65,17 @@ export function AppShell() {
     let cancelled = false;
     (async () => {
       try {
-        const [data, counts] = await Promise.all([
+        const [data, counts, ideaCounts] = await Promise.all([
           db.fetchEverything(),
           db.fetchCommentCounts().catch(() => ({})),
+          db.fetchIdeaCommentCounts().catch(() => ({})),
         ]);
         if (cancelled) return;
         setProjects(data.projects);
         setTasks(data.tasks);
         setIdeas(data.ideas);
         setCommentCounts(counts);
+        setIdeaCommentCounts(ideaCounts);
         setCurrentProjectId(data.projects[0]?.id ?? "");
       } catch (e) {
         if (!cancelled) setLoadError((e as Error).message);
@@ -109,6 +113,9 @@ export function AppShell() {
       comment: () => {
         db.fetchCommentCounts()
           .then(setCommentCounts)
+          .catch(console.error);
+        db.fetchIdeaCommentCounts()
+          .then(setIdeaCommentCounts)
           .catch(console.error);
       },
     });
@@ -153,6 +160,15 @@ export function AppShell() {
   }) {
     const task = await db.createTask({ ...draft, createdBy: currentUserId });
     setTasks((prev) => [task, ...prev]);
+    // Best-effort Telegram ping (don't block the UI or fail task creation).
+    fetch("/api/notify-task", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        title: task.title,
+        authorName: currentUser?.name,
+      }),
+    }).catch(() => {});
   }
   async function handleMoveTask(id: string, status: Task["status"]) {
     setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, status } : t)));
@@ -278,6 +294,32 @@ export function AppShell() {
       console.error(e);
     }
   }
+  async function handleUpdateIdea(id: string, fields: IdeaUpdate) {
+    setIdeas((prev) =>
+      prev.map((i) =>
+        i.id === id
+          ? {
+              ...i,
+              ...(fields.title !== undefined && { title: fields.title }),
+              ...(fields.pitch !== undefined && { pitch: fields.pitch ?? undefined }),
+              ...(fields.description !== undefined && {
+                description: fields.description ?? undefined,
+              }),
+              ...(fields.competitors !== undefined && { competitors: fields.competitors }),
+              ...(fields.tags !== undefined && { tags: fields.tags }),
+              ...(fields.imageUrls !== undefined && { imageUrls: fields.imageUrls }),
+              ...(fields.status !== undefined && { status: fields.status }),
+              updatedAt: new Date().toISOString(),
+            }
+          : i
+      )
+    );
+    try {
+      await db.updateIdea(id, fields);
+    } catch (e) {
+      console.error(e);
+    }
+  }
   async function handleConvertToProject(idea: Idea) {
     const p = await db.createProject(idea.title);
     setProjects((prev) => [...prev, p]);
@@ -391,10 +433,12 @@ export function AppShell() {
                   <IdeasPage
                     ideas={ideas}
                     currentUserId={currentUserId}
+                    ideaCommentCounts={ideaCommentCounts}
                     onAddIdea={handleAddIdea}
                     onToggleVote={handleToggleVote}
                     onCycleStatus={handleCycleStatus}
                     onDeleteIdea={handleDeleteIdea}
+                    onUpdateIdea={handleUpdateIdea}
                     onConvertToProject={handleConvertToProject}
                   />
                 )}

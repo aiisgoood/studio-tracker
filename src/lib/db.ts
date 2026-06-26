@@ -1,5 +1,15 @@
 import { supabase } from "./supabase";
-import { Comment, Idea, IdeaStatus, Priority, Project, Status, Task } from "./types";
+import {
+  Comment,
+  CommentTarget,
+  Competitor,
+  Idea,
+  IdeaStatus,
+  Priority,
+  Project,
+  Status,
+  Task,
+} from "./types";
 
 /* ---------- row → app-type mappers ---------- */
 
@@ -21,10 +31,15 @@ type IdeaRow = {
   id: string;
   title: string;
   pitch: string | null;
+  description: string | null;
+  competitors: Competitor[] | null;
+  tags: string[] | null;
+  image_urls: string[] | null;
   suggested_by: string | null;
   status: string;
   votes: string[] | null;
   created_at: string;
+  updated_at: string | null;
 };
 
 type ProjectRow = { id: string; name: string };
@@ -47,7 +62,8 @@ function toTask(r: TaskRow): Task {
 
 type CommentRow = {
   id: string;
-  task_id: string;
+  task_id: string | null;
+  idea_id: string | null;
   author_id: string | null;
   body: string | null;
   image_url: string | null;
@@ -57,7 +73,8 @@ type CommentRow = {
 function toComment(r: CommentRow): Comment {
   return {
     id: r.id,
-    taskId: r.task_id,
+    taskId: r.task_id ?? undefined,
+    ideaId: r.idea_id ?? undefined,
     authorId: r.author_id ?? "",
     body: r.body ?? undefined,
     imageUrl: r.image_url ?? undefined,
@@ -65,15 +82,25 @@ function toComment(r: CommentRow): Comment {
   };
 }
 
+/** Column on `comments` that holds the parent id for a given target. */
+function targetColumn(t: CommentTarget): "task_id" | "idea_id" {
+  return t.kind === "task" ? "task_id" : "idea_id";
+}
+
 function toIdea(r: IdeaRow): Idea {
   return {
     id: r.id,
     title: r.title,
     pitch: r.pitch ?? undefined,
+    description: r.description ?? undefined,
+    competitors: r.competitors ?? [],
+    tags: r.tags ?? [],
+    imageUrls: r.image_urls ?? [],
     suggestedById: r.suggested_by ?? "",
     status: r.status as IdeaStatus,
     votes: r.votes ?? [],
     createdAt: r.created_at,
+    updatedAt: r.updated_at ?? undefined,
   };
 }
 
@@ -233,6 +260,30 @@ export async function updateIdeaStatus(id: string, status: IdeaStatus) {
   if (error) throw error;
 }
 
+export async function updateIdea(
+  id: string,
+  fields: {
+    title?: string;
+    pitch?: string | null;
+    description?: string | null;
+    competitors?: Competitor[];
+    tags?: string[];
+    imageUrls?: string[];
+    status?: IdeaStatus;
+  }
+) {
+  const patch: Record<string, unknown> = { updated_at: new Date().toISOString() };
+  if (fields.title !== undefined) patch.title = fields.title;
+  if (fields.pitch !== undefined) patch.pitch = fields.pitch;
+  if (fields.description !== undefined) patch.description = fields.description;
+  if (fields.competitors !== undefined) patch.competitors = fields.competitors;
+  if (fields.tags !== undefined) patch.tags = fields.tags;
+  if (fields.imageUrls !== undefined) patch.image_urls = fields.imageUrls;
+  if (fields.status !== undefined) patch.status = fields.status;
+  const { error } = await db().from("ideas").update(patch).eq("id", id);
+  if (error) throw error;
+}
+
 export async function deleteIdea(id: string) {
   const { error } = await db().from("ideas").delete().eq("id", id);
   if (error) throw error;
@@ -240,11 +291,11 @@ export async function deleteIdea(id: string) {
 
 /* ---------- comments ---------- */
 
-export async function fetchComments(taskId: string): Promise<Comment[]> {
+export async function fetchComments(target: CommentTarget): Promise<Comment[]> {
   const { data, error } = await db()
     .from("comments")
     .select("*")
-    .eq("task_id", taskId)
+    .eq(targetColumn(target), target.id)
     .order("created_at", { ascending: true });
   if (error) throw error;
   return (data as CommentRow[]).map(toComment);
@@ -252,7 +303,10 @@ export async function fetchComments(taskId: string): Promise<Comment[]> {
 
 /** How many comments each task has, keyed by task id. */
 export async function fetchCommentCounts(): Promise<Record<string, number>> {
-  const { data, error } = await db().from("comments").select("task_id");
+  const { data, error } = await db()
+    .from("comments")
+    .select("task_id")
+    .not("task_id", "is", null);
   if (error) throw error;
   const counts: Record<string, number> = {};
   for (const r of data as { task_id: string }[]) {
@@ -261,8 +315,22 @@ export async function fetchCommentCounts(): Promise<Record<string, number>> {
   return counts;
 }
 
+/** How many comments each idea has, keyed by idea id. */
+export async function fetchIdeaCommentCounts(): Promise<Record<string, number>> {
+  const { data, error } = await db()
+    .from("comments")
+    .select("idea_id")
+    .not("idea_id", "is", null);
+  if (error) throw error;
+  const counts: Record<string, number> = {};
+  for (const r of data as { idea_id: string }[]) {
+    counts[r.idea_id] = (counts[r.idea_id] ?? 0) + 1;
+  }
+  return counts;
+}
+
 export async function addComment(input: {
-  taskId: string;
+  target: CommentTarget;
   authorId: string;
   body?: string;
   imageUrl?: string;
@@ -270,7 +338,8 @@ export async function addComment(input: {
   const { data, error } = await db()
     .from("comments")
     .insert({
-      task_id: input.taskId,
+      task_id: input.target.kind === "task" ? input.target.id : null,
+      idea_id: input.target.kind === "idea" ? input.target.id : null,
       author_id: input.authorId,
       body: input.body ?? null,
       image_url: input.imageUrl ?? null,
@@ -286,17 +355,18 @@ export async function deleteComment(id: string) {
   if (error) throw error;
 }
 
-/** Live comments for one task. Returns an unsubscribe function. */
+/** Live comments for one task or idea. Returns an unsubscribe function. */
 export function subscribeComments(
-  taskId: string,
+  target: CommentTarget,
   cb: (e: { type: "INSERT" | "DELETE"; row?: Comment; id?: string }) => void
 ): () => void {
   const client = db();
+  const col = targetColumn(target);
   const channel = client
-    .channel(`comments-${taskId}`)
+    .channel(`comments-${target.kind}-${target.id}`)
     .on(
       "postgres_changes",
-      { event: "*", schema: "public", table: "comments", filter: `task_id=eq.${taskId}` },
+      { event: "*", schema: "public", table: "comments", filter: `${col}=eq.${target.id}` },
       (p) => {
         if (p.eventType === "DELETE") cb({ type: "DELETE", id: (p.old as { id: string }).id });
         else if (p.eventType === "INSERT") cb({ type: "INSERT", row: toComment(p.new as CommentRow) });

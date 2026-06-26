@@ -2,7 +2,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Comment } from "@/lib/types";
+import { Comment, CommentTarget } from "@/lib/types";
 import { memberById } from "@/lib/data";
 import * as db from "@/lib/db";
 import { Avatar, Icon } from "./parts";
@@ -19,10 +19,10 @@ function timeLabel(iso: string): string {
 }
 
 export function Comments({
-  taskId,
+  target,
   currentUserId,
 }: {
-  taskId: string;
+  target: CommentTarget;
   currentUserId: string | null;
 }) {
   const [comments, setComments] = useState<Comment[]>([]);
@@ -34,10 +34,10 @@ export function Comments({
 
   useEffect(() => {
     let cancelled = false;
-    db.fetchComments(taskId)
+    db.fetchComments(target)
       .then((c) => !cancelled && setComments(c))
       .catch(console.error);
-    const unsub = db.subscribeComments(taskId, (e) => {
+    const unsub = db.subscribeComments(target, (e) => {
       if (e.type === "DELETE") setComments((p) => p.filter((c) => c.id !== e.id));
       else if (e.row)
         setComments((p) => (p.some((c) => c.id === e.row!.id) ? p : [...p, e.row!]));
@@ -46,7 +46,7 @@ export function Comments({
       cancelled = true;
       unsub();
     };
-  }, [taskId]);
+  }, [target.kind, target.id]);
 
   async function pickImage(file: File) {
     setUploading(true);
@@ -66,7 +66,7 @@ export function Comments({
     setSending(true);
     try {
       const created = await db.addComment({
-        taskId,
+        target,
         authorId: currentUserId,
         body: body.trim() || undefined,
         imageUrl: pendingImage ?? undefined,

@@ -42,3 +42,6 @@ next-env.d.ts
 
 # local agent tooling
 .claude/
+
+# graphify knowledge-graph output (regenerable)
+graphify-out/

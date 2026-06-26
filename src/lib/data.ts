@@ -1,4 +1,4 @@
-import { Idea, Member, Project, Task } from "./types";
+import { Member, Project, Task } from "./types";
 
 /**
  * Stage 1 uses in-memory sample data so the design can be reviewed.
@@ -111,45 +111,6 @@ export const SAMPLE_TASKS: Task[] = [
     assigneeIds: ["m_leqso"],
     dueDate: "2026-06-28",
     createdAt: "2026-06-23T10:00:00Z",
-  },
-];
-
-export const SAMPLE_IDEAS: Idea[] = [
-  {
-    id: "i1",
-    title: "AI receipt scanner for small shops",
-    pitch: "Snap a photo, get bookkeeping done. Charge monthly.",
-    suggestedById: "m_abdu",
-    status: "exploring",
-    votes: ["m_abdu", "m_cotne", "m_nitch"],
-    createdAt: "2026-06-20T09:00:00Z",
-  },
-  {
-    id: "i2",
-    title: "Dropshipping store for gym gear",
-    pitch: "Ride the fitness trend, test with TikTok ads first.",
-    suggestedById: "m_gelika",
-    status: "building",
-    votes: ["m_gelika", "m_leqso"],
-    createdAt: "2026-06-19T09:00:00Z",
-  },
-  {
-    id: "i3",
-    title: "Local food delivery in Batumi",
-    pitch: "Underserved market, build relationships with restaurants.",
-    suggestedById: "m_leqso",
-    status: "new",
-    votes: ["m_leqso"],
-    createdAt: "2026-06-22T09:00:00Z",
-  },
-  {
-    id: "i4",
-    title: "Newsletter sponsorship marketplace",
-    pitch: "Connect small newsletters with advertisers.",
-    suggestedById: "m_cotne",
-    status: "parked",
-    votes: [],
-    createdAt: "2026-06-15T09:00:00Z",
   },
 ];
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { Task } from "@/lib/types";
+import { CommentTarget } from "@/lib/types";
 import {
   Dialog,
   DialogContent,
@@ -10,25 +10,26 @@ import {
 import { Comments } from "./Comments";
 
 export function CommentsDialog({
-  task,
+  target,
+  title,
   currentUserId,
   onClose,
 }: {
-  task: Task | null;
+  /** null = closed */
+  target: CommentTarget | null;
+  title: string;
   currentUserId: string | null;
   onClose: () => void;
 }) {
   return (
-    <Dialog open={!!task} onOpenChange={(o) => !o && onClose()}>
+    <Dialog open={!!target} onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="max-h-[85vh] max-w-lg overflow-y-auto">
-        {task && (
+        {target && (
           <>
             <DialogHeader>
-              <DialogTitle className="truncate pr-6">
-                Comments · {task.title}
-              </DialogTitle>
+              <DialogTitle className="truncate pr-6">Comments · {title}</DialogTitle>
             </DialogHeader>
-            <Comments taskId={task.id} currentUserId={currentUserId} />
+            <Comments target={target} currentUserId={currentUserId} />
           </>
         )}
       </DialogContent>
