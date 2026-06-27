@@ -27,7 +27,8 @@ type IconName =
   | "send"
   | "image"
   | "refresh"
-  | "comment";
+  | "comment"
+  | "bell";
 
 const PATHS: Record<IconName, React.ReactNode> = {
   plus: <path d="M12 5v14M5 12h14" />,
@@ -122,6 +123,12 @@ const PATHS: Record<IconName, React.ReactNode> = {
     </>
   ),
   comment: <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />,
+  bell: (
+    <>
+      <path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
+      <path d="M13.5 21a1.8 1.8 0 01-3 0" />
+    </>
+  ),
 };
 
 export function Icon({

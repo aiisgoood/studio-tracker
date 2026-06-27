@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Idea, IDEA_STATUSES, Project, Task } from "@/lib/types";
-import { memberById } from "@/lib/data";
+import { Comment, Idea, IDEA_STATUSES, Project, Task } from "@/lib/types";
+import { MEMBERS, memberById } from "@/lib/data";
 import { isSupabaseReady } from "@/lib/supabase";
 import * as db from "@/lib/db";
+import { deriveNotifications, Notif } from "@/lib/notifications";
 import { Sidebar, NavItem } from "./Sidebar";
 import { BoardPage } from "./BoardPage";
 import { IdeasPage } from "./IdeasPage";
@@ -13,6 +14,7 @@ import { IdeaUpdate } from "./IdeaDialog";
 import { TeamPage } from "./TeamPage";
 import { SettingsPage } from "./SettingsPage";
 import { WhoAreYou } from "./WhoAreYou";
+import { NotificationsBell } from "./NotificationsBell";
 import { Avatar, Icon } from "./parts";
 
 const USER_KEY = "studio-user";
@@ -44,6 +46,10 @@ export function AppShell() {
   const [ideas, setIdeas] = useState<Idea[]>([]);
   const [commentCounts, setCommentCounts] = useState<Record<string, number>>({});
   const [ideaCommentCounts, setIdeaCommentCounts] = useState<Record<string, number>>({});
+  const [allComments, setAllComments] = useState<Comment[]>([]);
+  const [notifSeenAt, setNotifSeenAt] = useState<string>("");
+  // deep-link target when a notification is clicked
+  const [focusComment, setFocusComment] = useState<{ type: "task" | "idea"; id: string } | null>(null);
 
   // local prefs
   useEffect(() => {
@@ -65,10 +71,11 @@ export function AppShell() {
     let cancelled = false;
     (async () => {
       try {
-        const [data, counts, ideaCounts] = await Promise.all([
+        const [data, counts, ideaCounts, comments] = await Promise.all([
           db.fetchEverything(),
           db.fetchCommentCounts().catch(() => ({})),
           db.fetchIdeaCommentCounts().catch(() => ({})),
+          db.fetchAllComments().catch(() => [] as Comment[]),
         ]);
         if (cancelled) return;
         setProjects(data.projects);
@@ -76,6 +83,7 @@ export function AppShell() {
         setIdeas(data.ideas);
         setCommentCounts(counts);
         setIdeaCommentCounts(ideaCounts);
+        setAllComments(comments);
         setCurrentProjectId(data.projects[0]?.id ?? "");
       } catch (e) {
         if (!cancelled) setLoadError((e as Error).message);
@@ -117,12 +125,58 @@ export function AppShell() {
         db.fetchIdeaCommentCounts()
           .then(setIdeaCommentCounts)
           .catch(console.error);
+        db.fetchAllComments()
+          .then(setAllComments)
+          .catch(console.error);
       },
     });
     return unsubscribe;
   }, [ready]);
 
   const currentUser = currentUserId ? memberById(currentUserId) : undefined;
+
+  // per-user "last opened notifications" timestamp (device-local). New users start
+  // clean (seen = now) so they aren't flooded by the whole comment history.
+  useEffect(() => {
+    if (!currentUserId) return;
+    const key = `studio-notif-seen-${currentUserId}`;
+    let stored = localStorage.getItem(key);
+    if (!stored) {
+      stored = new Date().toISOString();
+      localStorage.setItem(key, stored);
+    }
+    setNotifSeenAt(stored);
+  }, [currentUserId]);
+
+  const notifications = useMemo(
+    () =>
+      deriveNotifications({
+        comments: allComments,
+        tasks,
+        ideas,
+        members: MEMBERS,
+        currentUserId,
+      }),
+    [allComments, tasks, ideas, currentUserId]
+  );
+
+  function markNotifsSeen() {
+    if (!currentUserId) return;
+    const now = new Date().toISOString();
+    localStorage.setItem(`studio-notif-seen-${currentUserId}`, now);
+    setNotifSeenAt(now);
+  }
+
+  function handleSelectNotif(n: Notif) {
+    if (n.targetType === "task") {
+      const t = tasks.find((x) => x.id === n.targetId);
+      if (t) setCurrentProjectId(t.projectId);
+      setPage("board");
+    } else {
+      setPage("ideas");
+    }
+    setFocusComment({ type: n.targetType, id: n.targetId });
+  }
 
   /* ---------- prefs handlers ---------- */
   function pickUser(id: string) {
@@ -359,7 +413,15 @@ export function AppShell() {
           <Icon name="menu" size={22} />
         </button>
         <span className="font-semibold text-ink">{studioName}</span>
-        {currentUser && <Avatar member={currentUser} size={28} />}
+        <div className="flex items-center gap-1">
+          <NotificationsBell
+            notifications={notifications}
+            seenAt={notifSeenAt}
+            onSeen={markNotifsSeen}
+            onSelect={handleSelectNotif}
+          />
+          {currentUser && <Avatar member={currentUser} size={28} />}
+        </div>
       </div>
 
       <div className="flex">
@@ -392,6 +454,14 @@ export function AppShell() {
 
         <main className="min-w-0 flex-1 px-4 py-6 sm:px-8 sm:py-8">
           <div className="mx-auto w-full max-w-[1600px]">
+            <div className="mb-4 hidden justify-end sm:flex">
+              <NotificationsBell
+                notifications={notifications}
+                seenAt={notifSeenAt}
+                onSeen={markNotifsSeen}
+                onSelect={handleSelectNotif}
+              />
+            </div>
             {loading ? (
               <div className="flex h-[60vh] items-center justify-center">
                 <p className="text-sm text-muted-foreground">Loading your workspace…</p>
@@ -427,6 +497,10 @@ export function AppShell() {
                     onUpdateTask={handleUpdateTask}
                     onRenameProject={handleRenameProject}
                     onDeleteProject={handleDeleteProject}
+                    focusCommentTaskId={
+                      focusComment?.type === "task" ? focusComment.id : null
+                    }
+                    onFocusConsumed={() => setFocusComment(null)}
                   />
                 )}
                 {page === "ideas" && (
@@ -440,6 +514,10 @@ export function AppShell() {
                     onDeleteIdea={handleDeleteIdea}
                     onUpdateIdea={handleUpdateIdea}
                     onConvertToProject={handleConvertToProject}
+                    focusCommentIdeaId={
+                      focusComment?.type === "idea" ? focusComment.id : null
+                    }
+                    onFocusConsumed={() => setFocusComment(null)}
                   />
                 )}
                 {page === "team" && <TeamPage tasks={tasks} />}

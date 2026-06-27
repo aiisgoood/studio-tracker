@@ -315,6 +315,17 @@ export async function fetchCommentCounts(): Promise<Record<string, number>> {
   return counts;
 }
 
+/** Recent comments across all tasks and ideas — used to build notifications. */
+export async function fetchAllComments(limit = 200): Promise<Comment[]> {
+  const { data, error } = await db()
+    .from("comments")
+    .select("*")
+    .order("created_at", { ascending: false })
+    .limit(limit);
+  if (error) throw error;
+  return (data as CommentRow[]).map(toComment);
+}
+
 /** How many comments each idea has, keyed by idea id. */
 export async function fetchIdeaCommentCounts(): Promise<Record<string, number>> {
   const { data, error } = await db()

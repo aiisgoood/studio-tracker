@@ -7,6 +7,7 @@ import { memberById } from "@/lib/data";
 import * as db from "@/lib/db";
 import { Avatar, Icon } from "./parts";
 import { Button } from "@/components/ui/button";
+import { useImageDrop } from "@/lib/useImageDrop";
 
 function timeLabel(iso: string): string {
   const d = new Date(iso);
@@ -61,6 +62,8 @@ export function Comments({
     }
   }
 
+  const { dragging, dropProps } = useImageDrop(pickImage);
+
   async function send() {
     if (!currentUserId || (!body.trim() && !pendingImage) || sending) return;
     setSending(true);
@@ -82,12 +85,12 @@ export function Comments({
   }
 
   return (
-    <div>
+    <div className="flex h-full flex-col">
       <p className="mb-2 text-xs font-medium text-muted-foreground">
         Comments {comments.length > 0 && `· ${comments.length}`}
       </p>
 
-      <div className="max-h-56 space-y-3 overflow-y-auto pr-1">
+      <div className="min-h-0 flex-1 space-y-3 overflow-y-auto pr-1">
         {comments.length === 0 && (
           <p className="text-xs text-muted-foreground">No comments yet.</p>
         )}
@@ -109,7 +112,10 @@ export function Comments({
                     {timeLabel(c.createdAt)}
                   </span>
                   <button
-                    onClick={() => db.deleteComment(c.id).catch(console.error)}
+                    onClick={() => {
+                      setComments((p) => p.filter((x) => x.id !== c.id));
+                      db.deleteComment(c.id).catch(console.error);
+                    }}
                     aria-label="Delete comment"
                     className="ml-auto rounded p-0.5 text-muted-foreground opacity-0 transition hover:text-[var(--color-prio-urgent)] group-hover:opacity-100"
                   >
@@ -135,7 +141,18 @@ export function Comments({
       </div>
 
       {/* composer */}
-      <div className="mt-3 rounded-xl border border-border bg-secondary p-2">
+      <div
+        {...dropProps}
+        className={[
+          "relative mt-3 rounded-xl border bg-secondary p-2 transition-colors",
+          dragging ? "border-dashed border-primary bg-primary/5" : "border-border",
+        ].join(" ")}
+      >
+        {dragging && (
+          <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center rounded-xl bg-secondary/80 text-xs font-medium text-primary">
+            Drop image to attach
+          </div>
+        )}
         {pendingImage && (
           <div className="relative mb-2 inline-block">
             <img

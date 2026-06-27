@@ -4,130 +4,129 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* ============================================================
-   Monochrome theme — pure black & white with neutral grays.
-   Functional color (red / amber / green) is reserved strictly
-   for status & attention: priorities, due dates, idea stages
-   and destructive actions. Everything structural is grayscale.
+   Soft Pastel theme — lavender page, white cards, a soft violet
+   primary, with mint / butter / lavender accents. Pillowy, light
+   and friendly. Status color (mint / amber / rose) stays reserved
+   for priorities, due dates, idea stages and destructive actions.
    ============================================================ */
 
-/* ---------------- Light: paper white ---------------- */
+/* ---------------- Light: lavender mist ---------------- */
 :root {
-  --radius: 0.9rem;
+  --radius: 1.1rem;
 
   /* shadcn semantic tokens */
-  --background: #ffffff;
-  --foreground: #0a0a0a;
+  --background: #f4f1fb;
+  --foreground: #3b3357;
   --card: #ffffff;
-  --card-foreground: #0a0a0a;
+  --card-foreground: #3b3357;
   --popover: #ffffff;
-  --popover-foreground: #0a0a0a;
-  --primary: #0a0a0a;
+  --popover-foreground: #3b3357;
+  --primary: #8b7fd6;
   --primary-foreground: #ffffff;
-  --secondary: #f4f4f5;
-  --secondary-foreground: #0a0a0a;
-  --muted: #f4f4f5;
-  --muted-foreground: #71717a;
-  --accent: #f4f4f5;
-  --accent-foreground: #0a0a0a;
-  --destructive: #dc2626;
+  --secondary: #efeafb;
+  --secondary-foreground: #3b3357;
+  --muted: #efeafb;
+  --muted-foreground: #8e86a8;
+  --accent: #efeafb;
+  --accent-foreground: #3b3357;
+  --destructive: #db5c77;
   --destructive-foreground: #ffffff;
-  --border: #e5e5e5;
-  --input: #e5e5e5;
-  --ring: #0a0a0a;
+  --border: #e9e3f6;
+  --input: #e9e3f6;
+  --ring: #8b7fd6;
 
-  --sidebar: #fafafa;
-  --sidebar-foreground: #0a0a0a;
-  --sidebar-primary: #0a0a0a;
+  --sidebar: #f0ebfa;
+  --sidebar-foreground: #3b3357;
+  --sidebar-primary: #8b7fd6;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f0f0f0;
-  --sidebar-accent-foreground: #0a0a0a;
-  --sidebar-border: #e5e5e5;
-  --sidebar-ring: #0a0a0a;
+  --sidebar-accent: #e4dcf6;
+  --sidebar-accent-foreground: #3b3357;
+  --sidebar-border: #e3dbf4;
+  --sidebar-ring: #8b7fd6;
 
-  /* extra aliases used by existing markup (kept monochrome) */
+  /* extra aliases used by existing markup */
   --surface: #ffffff;
-  --surface-2: #f4f4f5;
-  --line: #e5e5e5;
-  --line-strong: #d4d4d4;
-  --ink: #0a0a0a;
-  --primary-hover: #262626;
+  --surface-2: #efeafb;
+  --line: #e9e3f6;
+  --line-strong: #d9cff0;
+  --ink: #3b3357;
+  --primary-hover: #7a6ccb;
 
-  /* domain accents — "todo" and "slate" are neutral gray; only
-     doing(amber), done(green) and urgent(red) carry real color. */
-  --todo: #a1a1aa;
-  --doing: #d97706;
-  --done: #16a34a;
-  --amber-bg: #fdf4e7;
-  --amber-ink: #b45309;
-  --amber-line: #f6e2bf;
-  --sage-bg: #ecf7ef;
-  --sage-ink: #15803d;
-  --sage-line: #c8e9d2;
-  --slate-bg: #f4f4f5;
-  --slate-ink: #18181b;
-  --slate-line: #e4e4e7;
-  --prio-low: #16a34a;
-  --prio-medium: #d97706;
-  --prio-urgent: #dc2626;
-  --danger-bg: #fdecea;
-  --danger-ink: #b91c1c;
+  /* domain accents — soft pastel status colors. */
+  --todo: #a99fc9;
+  --doing: #e0a23d;
+  --done: #5fb894;
+  --amber-bg: #fbf0dd;
+  --amber-ink: #9a6b1e;
+  --amber-line: #f2e0be;
+  --sage-bg: #dff3e9;
+  --sage-ink: #2f6b4f;
+  --sage-line: #c3e7d5;
+  --slate-bg: #efeafb;
+  --slate-ink: #5b4f8a;
+  --slate-line: #e1d8f5;
+  --prio-low: #5fb894;
+  --prio-medium: #e0a23d;
+  --prio-urgent: #db5c77;
+  --danger-bg: #fbe6ec;
+  --danger-ink: #b04a66;
 }
 
-/* ---------------- Dark: true black ---------------- */
+/* ---------------- Dark: midnight lavender ---------------- */
 .dark {
-  --background: #0a0a0a;
-  --foreground: #fafafa;
-  --card: #131313;
-  --card-foreground: #fafafa;
-  --popover: #131313;
-  --popover-foreground: #fafafa;
-  --primary: #fafafa;
-  --primary-foreground: #0a0a0a;
-  --secondary: #1c1c1c;
-  --secondary-foreground: #fafafa;
-  --muted: #1c1c1c;
-  --muted-foreground: #a1a1aa;
-  --accent: #1f1f1f;
-  --accent-foreground: #fafafa;
-  --destructive: #f87171;
-  --destructive-foreground: #0a0a0a;
-  --border: #272727;
-  --input: #2a2a2a;
-  --ring: #d4d4d4;
+  --background: #1a1726;
+  --foreground: #ece7f7;
+  --card: #221e30;
+  --card-foreground: #ece7f7;
+  --popover: #221e30;
+  --popover-foreground: #ece7f7;
+  --primary: #a99bea;
+  --primary-foreground: #1a1726;
+  --secondary: #2a2540;
+  --secondary-foreground: #ece7f7;
+  --muted: #2a2540;
+  --muted-foreground: #a79fc2;
+  --accent: #2a2540;
+  --accent-foreground: #ece7f7;
+  --destructive: #f08aa6;
+  --destructive-foreground: #1a1726;
+  --border: #332c49;
+  --input: #332c49;
+  --ring: #a99bea;
 
-  --sidebar: #0d0d0d;
-  --sidebar-foreground: #fafafa;
-  --sidebar-primary: #fafafa;
-  --sidebar-primary-foreground: #0a0a0a;
-  --sidebar-accent: #1f1f1f;
-  --sidebar-accent-foreground: #fafafa;
-  --sidebar-border: #272727;
-  --sidebar-ring: #d4d4d4;
+  --sidebar: #16131f;
+  --sidebar-foreground: #ece7f7;
+  --sidebar-primary: #a99bea;
+  --sidebar-primary-foreground: #1a1726;
+  --sidebar-accent: #2a2540;
+  --sidebar-accent-foreground: #ece7f7;
+  --sidebar-border: #332c49;
+  --sidebar-ring: #a99bea;
 
-  --surface: #131313;
-  --surface-2: #1c1c1c;
-  --line: #272727;
-  --line-strong: #3a3a3a;
-  --ink: #fafafa;
-  --primary-hover: #e4e4e7;
+  --surface: #221e30;
+  --surface-2: #2a2540;
+  --line: #332c49;
+  --line-strong: #443b5f;
+  --ink: #ece7f7;
+  --primary-hover: #b9adf0;
 
-  --todo: #71717a;
-  --doing: #fbbf24;
-  --done: #4ade80;
-  --amber-bg: #2a1f0c;
-  --amber-ink: #fbbf24;
-  --amber-line: #45340f;
-  --sage-bg: #0f2417;
-  --sage-ink: #4ade80;
-  --sage-line: #1c3b29;
-  --slate-bg: #1f1f1f;
-  --slate-ink: #fafafa;
-  --slate-line: #2e2e2e;
-  --prio-low: #4ade80;
-  --prio-medium: #fbbf24;
-  --prio-urgent: #f87171;
-  --danger-bg: #2a1212;
-  --danger-ink: #f87171;
+  --todo: #8b82ad;
+  --doing: #f0c06a;
+  --done: #74d3a8;
+  --amber-bg: #2e2310;
+  --amber-ink: #f0c06a;
+  --amber-line: #463715;
+  --sage-bg: #11281c;
+  --sage-ink: #74d3a8;
+  --sage-line: #1f4632;
+  --slate-bg: #2a2540;
+  --slate-ink: #d7cdf2;
+  --slate-line: #3a3257;
+  --prio-low: #74d3a8;
+  --prio-medium: #f0c06a;
+  --prio-urgent: #f08aa6;
+  --danger-bg: #321824;
+  --danger-ink: #f08aa6;
 }
 
 @theme inline {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   DndContext,
   DragEndEvent,
@@ -14,7 +14,7 @@ import { Priority, Project, Status, STATUSES, Task } from "@/lib/types";
 import { Column } from "./Column";
 import { NewTaskModal } from "./NewTaskModal";
 import { TaskDialog, TaskUpdate } from "./TaskDialog";
-import { CommentsDialog } from "./CommentsDialog";
+import { CommentsPanel } from "./CommentsPanel";
 import { Confetti, Icon } from "./parts";
 import {
   DropdownMenu,
@@ -57,6 +57,8 @@ export function BoardPage({
   onUpdateTask,
   onRenameProject,
   onDeleteProject,
+  focusCommentTaskId,
+  onFocusConsumed,
 }: {
   tasks: Task[];
   projects: Project[];
@@ -72,6 +74,8 @@ export function BoardPage({
   onUpdateTask: (id: string, fields: TaskUpdate) => void;
   onRenameProject: (id: string, name: string) => void;
   onDeleteProject: (id: string) => void;
+  focusCommentTaskId?: string | null;
+  onFocusConsumed?: () => void;
 }) {
   const [showNew, setShowNew] = useState(false);
   const [confettiKey, setConfettiKey] = useState(0);
@@ -94,6 +98,15 @@ export function BoardPage({
   const commentTask = commentTaskId
     ? tasks.find((t) => t.id === commentTaskId) ?? null
     : null;
+
+  // open a task's comments when a notification deep-links to it
+  useEffect(() => {
+    if (focusCommentTaskId && tasks.some((t) => t.id === focusCommentTaskId)) {
+      setCommentTaskId(focusCommentTaskId);
+      onFocusConsumed?.();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [focusCommentTaskId]);
 
   function onDragEnd(e: DragEndEvent) {
     const { active, over } = e;
@@ -243,7 +256,7 @@ export function BoardPage({
       />
 
       {/* Comments */}
-      <CommentsDialog
+      <CommentsPanel
         target={commentTask ? { kind: "task", id: commentTask.id } : null}
         title={commentTask?.title ?? ""}
         currentUserId={currentUserId}

@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Idea, IdeaStatus } from "@/lib/types";
 import { memberById } from "@/lib/data";
 import { Avatar, Icon } from "./parts";
 import { IdeaDialog, IdeaUpdate } from "./IdeaDialog";
-import { CommentsDialog } from "./CommentsDialog";
+import { CommentsPanel } from "./CommentsPanel";
 
 const STATUS_STYLE: Record<IdeaStatus, { bg: string; ink: string }> = {
   new: { bg: "var(--color-slate-bg)", ink: "var(--color-slate-ink)" },
@@ -29,6 +29,8 @@ export function IdeasPage({
   onDeleteIdea,
   onUpdateIdea,
   onConvertToProject,
+  focusCommentIdeaId,
+  onFocusConsumed,
 }: {
   ideas: Idea[];
   currentUserId: string | null;
@@ -39,6 +41,8 @@ export function IdeasPage({
   onDeleteIdea: (id: string) => void;
   onUpdateIdea: (id: string, fields: IdeaUpdate) => void;
   onConvertToProject: (idea: Idea) => void;
+  focusCommentIdeaId?: string | null;
+  onFocusConsumed?: () => void;
 }) {
   const [title, setTitle] = useState("");
   const [pitch, setPitch] = useState("");
@@ -50,6 +54,15 @@ export function IdeasPage({
 
   const editingIdea = editingId ? ideas.find((i) => i.id === editingId) ?? null : null;
   const commentsIdea = commentsId ? ideas.find((i) => i.id === commentsId) ?? null : null;
+
+  // open an idea's comments when a notification deep-links to it
+  useEffect(() => {
+    if (focusCommentIdeaId && ideas.some((i) => i.id === focusCommentIdeaId)) {
+      setCommentsId(focusCommentIdeaId);
+      onFocusConsumed?.();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [focusCommentIdeaId]);
 
   function add() {
     if (!title.trim()) return;
@@ -245,7 +258,7 @@ export function IdeasPage({
         }}
       />
 
-      <CommentsDialog
+      <CommentsPanel
         target={commentsIdea ? { kind: "idea", id: commentsIdea.id } : null}
         title={commentsIdea?.title ?? ""}
         currentUserId={currentUserId}

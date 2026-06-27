@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Avatar, Icon } from "./parts";
+import { useImageDrop } from "@/lib/useImageDrop";
 
 export type IdeaUpdate = {
   title?: string;
@@ -114,6 +115,8 @@ function Body({
       setUploading(false);
     }
   }
+
+  const { dragging, dropProps } = useImageDrop(addImage);
 
   function save() {
     if (!title.trim()) return;
@@ -247,7 +250,13 @@ function Body({
         {/* images */}
         <div>
           <Label className="mb-1.5 text-muted-foreground">Images</Label>
-          <div className="flex flex-wrap items-center gap-2">
+          <div
+            {...dropProps}
+            className={[
+              "flex flex-wrap items-center gap-2 rounded-lg border border-dashed p-2 transition-colors",
+              dragging ? "border-primary bg-primary/5" : "border-transparent",
+            ].join(" ")}
+          >
             {imageUrls.map((url) => (
               <div key={url} className="relative">
                 <a href={url} target="_blank" rel="noreferrer">
