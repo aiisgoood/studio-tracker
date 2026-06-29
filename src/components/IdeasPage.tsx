@@ -100,7 +100,7 @@ export function IdeasPage({
           <button
             onClick={add}
             disabled={!title.trim()}
-            className="shrink-0 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-primary-ink transition-colors hover:bg-primary-hover disabled:opacity-50"
+            className="btn-pop shrink-0 rounded-full bg-primary px-4 py-2.5 text-sm font-semibold text-primary-ink transition-all disabled:opacity-50"
           >
             Add idea
           </button>

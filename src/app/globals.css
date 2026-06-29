@@ -6,55 +6,56 @@
 /* ============================================================
    Dusk theme — deep navy surfaces with a warm peach primary and
    red / maroon accents (palette: #1B1E2F #242F49 #384358 #FFA586
-   #B51A2B #641A2E). Dark-first; the light mode below is a warm
-   counterpart (navy ink + peach/red accents). The palette has no
-   green/amber, so "done/success" uses an added soft teal-green.
+   #B51A2B #641A2E). Dark-first. The light mode below is a crisp
+   "Santorini" blue & white (white cards, deep-blue ink, sky-blue
+   accent). The palette has no green/amber, so "done/success" uses
+   an added soft teal-green and "doing" a warm amber for clarity.
    ============================================================ */
 
-/* ---------------- Light: warm paper ---------------- */
+/* ---------------- Light: Santorini blue & white ---------------- */
 :root {
   --radius: 0.85rem;
 
   /* shadcn semantic tokens */
-  --background: #faf5f1;
-  --foreground: #1b1e2f;
+  --background: #f4f8fd;
+  --foreground: #052659;
   --card: #ffffff;
-  --card-foreground: #1b1e2f;
+  --card-foreground: #052659;
   --popover: #ffffff;
-  --popover-foreground: #1b1e2f;
-  --primary: #ffa586;
-  --primary-foreground: #1b1e2f;
-  --secondary: #f0eae4;
-  --secondary-foreground: #1b1e2f;
-  --muted: #f0eae4;
-  --muted-foreground: #6b7185;
-  --accent: #f0eae4;
-  --accent-foreground: #1b1e2f;
-  --destructive: #b51a2b;
+  --popover-foreground: #052659;
+  --primary: #3f77b0;
+  --primary-foreground: #ffffff;
+  --secondary: #e7eff9;
+  --secondary-foreground: #052659;
+  --muted: #e7eff9;
+  --muted-foreground: #5e7596;
+  --accent: #e7eff9;
+  --accent-foreground: #052659;
+  --destructive: #c4324a;
   --destructive-foreground: #ffffff;
-  --border: #ece3db;
-  --input: #ece3db;
-  --ring: #ffa586;
+  --border: #d5e2f2;
+  --input: #d5e2f2;
+  --ring: #5483b3;
 
-  --sidebar: #f4eee8;
-  --sidebar-foreground: #1b1e2f;
-  --sidebar-primary: #ffa586;
-  --sidebar-primary-foreground: #1b1e2f;
-  --sidebar-accent: #ece3db;
-  --sidebar-accent-foreground: #1b1e2f;
-  --sidebar-border: #e7ddd3;
-  --sidebar-ring: #ffa586;
+  --sidebar: #eaf1fa;
+  --sidebar-foreground: #052659;
+  --sidebar-primary: #3f77b0;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #dce8f6;
+  --sidebar-accent-foreground: #052659;
+  --sidebar-border: #d5e2f2;
+  --sidebar-ring: #5483b3;
 
   /* extra aliases used by existing markup */
   --surface: #ffffff;
-  --surface-2: #f0eae4;
-  --line: #ece3db;
-  --line-strong: #ddd0c5;
-  --ink: #1b1e2f;
-  --primary-hover: #f2926e;
+  --surface-2: #e7eff9;
+  --line: #d5e2f2;
+  --line-strong: #bccde6;
+  --ink: #052659;
+  --primary-hover: #34659a;
 
-  /* domain accents — navy/peach/red palette + teal-green for done. */
-  --todo: #8a93a8;
+  /* domain accents — sky-blue base; warm/green status hues kept for clarity. */
+  --todo: #8198ba;
   --doing: #e8843f;
   --done: #2e9e7e;
   --amber-bg: #fcede2;
@@ -63,13 +64,13 @@
   --sage-bg: #e2f3ec;
   --sage-ink: #1f7d62;
   --sage-line: #c8e9da;
-  --slate-bg: #eef0f5;
-  --slate-ink: #3a4663;
-  --slate-line: #e0e4ee;
+  --slate-bg: #e7eff9;
+  --slate-ink: #3a4f73;
+  --slate-line: #d5e2f2;
   --prio-low: #2e9e7e;
   --prio-medium: #e8843f;
-  --prio-urgent: #b51a2b;
-  --danger-bg: #fbe7e7;
+  --prio-urgent: #c4324a;
+  --danger-bg: #fbe7e9;
   --danger-ink: #b51a2b;
 }
 
@@ -213,6 +214,33 @@ body {
 * {
   scrollbar-width: thin;
   scrollbar-color: var(--line-strong) transparent;
+}
+
+/* Tactile "pop" button — gradient sheen, top gloss + accent glow, hover lift. */
+.btn-pop {
+  background-image: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--color-primary) 86%, white),
+    var(--color-primary) 55%,
+    color-mix(in oklab, var(--color-primary) 90%, black)
+  );
+  box-shadow:
+    inset 0 1px 0 0 color-mix(in oklab, white 35%, transparent),
+    0 6px 16px -6px color-mix(in oklab, var(--color-primary) 75%, transparent),
+    0 2px 5px -2px color-mix(in oklab, black 30%, transparent);
+}
+.btn-pop:hover {
+  transform: translateY(-1px);
+  background-image: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--color-primary) 90%, white),
+    var(--color-primary) 55%,
+    color-mix(in oklab, var(--color-primary) 90%, black)
+  );
+  box-shadow:
+    inset 0 1px 0 0 color-mix(in oklab, white 42%, transparent),
+    0 10px 24px -6px color-mix(in oklab, var(--color-primary) 88%, transparent),
+    0 4px 8px -3px color-mix(in oklab, black 38%, transparent);
 }
 
 @layer base {
