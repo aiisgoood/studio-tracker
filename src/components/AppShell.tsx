@@ -229,6 +229,9 @@ export function AppShell() {
       body: JSON.stringify({
         title: task.title,
         authorName: currentUser?.name,
+        assignees: task.assigneeIds
+          .map((id) => memberById(id)?.name)
+          .filter(Boolean),
       }),
     }).catch(() => {});
   }

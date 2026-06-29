@@ -3,6 +3,8 @@ import type { NextRequest } from "next/server";
 type Payload = {
   title?: string;
   authorName?: string;
+  /** display names of the members the task is assigned to */
+  assignees?: string[];
 };
 
 function escapeHtml(s: string): string {
@@ -29,9 +31,13 @@ export async function POST(request: NextRequest) {
     return Response.json({ ok: false, error: "title required" }, { status: 400 });
   }
 
-  // One short line: 🆕 "title" — author
+  // 🆕 "title" — author  /  👤 assignees (or 🙋 up for grabs)
   const author = body.authorName ? ` — ${escapeHtml(body.authorName)}` : "";
-  const text = `🆕 <b>${escapeHtml(title)}</b>${author}`;
+  const names = (body.assignees ?? []).map((n) => escapeHtml(n)).filter(Boolean);
+  const assigneeLine = names.length
+    ? `\n👤 ${names.join(", ")}`
+    : "\n🙋 up for grabs";
+  const text = `🆕 <b>${escapeHtml(title)}</b>${author}${assigneeLine}`;
 
   try {
     const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
