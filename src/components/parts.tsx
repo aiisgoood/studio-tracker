@@ -181,14 +181,11 @@ export function Avatar({
         background: member.color,
         color: member.ink,
         boxShadow: glow
-          ? `0 0 0 2px ${ring}, 0 0 0 4px var(--color-primary), 0 0 12px 2px color-mix(in oklab, var(--color-primary) 65%, transparent)`
+          ? `0 0 0 2px ${ring}, 0 0 0 4px var(--color-primary)`
           : `0 0 0 2px ${ring}`,
         fontSize: size * 0.42,
       }}
-      className={[
-        "inline-flex shrink-0 items-center justify-center rounded-full font-semibold",
-        glow ? "animate-pulse" : "",
-      ].join(" ")}
+      className="inline-flex shrink-0 items-center justify-center rounded-full font-semibold"
     >
       {member.initial}
     </span>
