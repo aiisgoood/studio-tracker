@@ -166,8 +166,6 @@ export function AppShell() {
     setNotifSeenAt(now);
   }
 
-  const hasUnread = notifications.some((n) => n.createdAt > notifSeenAt);
-
   function handleOpenTask(id: string) {
     const t = tasks.find((x) => x.id === id);
     if (t) setCurrentProjectId(t.projectId);
@@ -406,7 +404,6 @@ export function AppShell() {
       active={page}
       onNavigate={navigate}
       currentUser={currentUser}
-      userGlow={hasUnread}
       isDark={isDark}
       onToggleTheme={toggleTheme}
       onSwitchUser={switchUser}
@@ -432,7 +429,7 @@ export function AppShell() {
             onSeen={markNotifsSeen}
             onSelect={handleSelectNotif}
           />
-          {currentUser && <Avatar member={currentUser} size={28} glow={hasUnread} />}
+          {currentUser && <Avatar member={currentUser} size={28} />}
         </div>
       </div>
 

@@ -43,7 +43,6 @@ export function TaskCard({
   return (
     <div
       ref={setNodeRef}
-      style={style}
       {...attributes}
       {...listeners}
       onPointerDownCapture={(e) => {
@@ -64,6 +63,7 @@ export function TaskCard({
           ? "border-[var(--color-sage-line)] bg-sage-bg"
           : "border-line bg-surface",
       ].join(" ")}
+      style={style}
     >
       <div className="flex items-start justify-between gap-2">
         <div className="flex items-start gap-1.5">
@@ -151,6 +151,7 @@ export function TaskCard({
           <AvatarStack
             members={assignees}
             ring={isDone ? "var(--color-sage-bg)" : "var(--surface)"}
+            glowId={currentUserId}
           />
         )}
       </div>

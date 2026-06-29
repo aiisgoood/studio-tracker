@@ -16,7 +16,6 @@ export function Sidebar({
   active,
   onNavigate,
   currentUser,
-  userGlow = false,
   isDark,
   onToggleTheme,
   onSwitchUser,
@@ -26,7 +25,6 @@ export function Sidebar({
   active: string;
   onNavigate: (id: string) => void;
   currentUser?: Member;
-  userGlow?: boolean;
   isDark: boolean;
   onToggleTheme: () => void;
   onSwitchUser: () => void;
@@ -93,7 +91,7 @@ export function Sidebar({
             whileTap={{ scale: 0.97 }}
             className="flex w-full items-center gap-2.5 rounded-xl px-2 py-2 transition-colors hover:bg-surface-2"
           >
-            <Avatar member={currentUser} size={30} glow={userGlow} />
+            <Avatar member={currentUser} size={30} />
             <span className="text-sm font-medium capitalize text-ink">
               {currentUser.name}
             </span>

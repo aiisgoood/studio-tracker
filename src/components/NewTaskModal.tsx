@@ -8,6 +8,7 @@ import { MEMBERS } from "@/lib/data";
 import * as db from "@/lib/db";
 import { NewTaskDraft } from "./BoardPage";
 import { Avatar, Icon } from "./parts";
+import { useImageDrop } from "@/lib/useImageDrop";
 
 export function NewTaskModal({
   projectId,
@@ -45,6 +46,8 @@ export function NewTaskModal({
       setUploading(false);
     }
   }
+
+  const { dragging, dropProps } = useImageDrop(addImage);
 
   function submit() {
     if (!title.trim()) return;
@@ -175,9 +178,18 @@ export function NewTaskModal({
 
         <div className="mt-3">
           <label className="mb-1.5 block text-xs font-medium text-muted-foreground">
-            Images
+            Images{" "}
+            <span className="font-normal">· drop images here or click to upload</span>
           </label>
-          <div className="flex flex-wrap items-center gap-2">
+          <div
+            {...dropProps}
+            className={[
+              "flex flex-wrap items-center gap-2 rounded-xl border border-dashed p-2 transition-colors",
+              dragging
+                ? "border-primary bg-[color-mix(in_oklab,var(--color-primary)_12%,var(--surface))]"
+                : "border-transparent",
+            ].join(" ")}
+          >
             {imageUrls.map((url) => (
               <div key={url} className="relative">
                 <img

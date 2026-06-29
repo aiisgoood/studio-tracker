@@ -199,19 +199,29 @@ export function AvatarStack({
   members,
   size = 24,
   ring = "var(--surface)",
+  glowId,
 }: {
   members: Member[];
   size?: number;
   ring?: string;
+  /** id of the member whose avatar should glow (e.g. the logged-in user) */
+  glowId?: string | null;
 }) {
   if (members.length === 0) return null;
   return (
     <div className="flex items-center">
-      {members.map((m, i) => (
-        <span key={m.id} style={{ marginLeft: i === 0 ? 0 : -size * 0.3 }}>
-          <Avatar member={m} size={size} ring={ring} />
-        </span>
-      ))}
+      {members.map((m, i) => {
+        const glow = !!glowId && m.id === glowId;
+        return (
+          <span
+            key={m.id}
+            style={{ marginLeft: i === 0 ? 0 : -size * 0.3, zIndex: glow ? 1 : 0 }}
+            className="relative"
+          >
+            <Avatar member={m} size={size} ring={ring} glow={glow} />
+          </span>
+        );
+      })}
     </div>
   );
 }
