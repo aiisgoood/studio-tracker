@@ -1,9 +1,11 @@
 import { Comment, Idea, Member, Task } from "./types";
 
+export type NotifKind = "mention" | "comment" | "assigned" | "reply";
+
 export interface Notif {
   /** the comment id this notification is about */
   id: string;
-  kind: "comment" | "mention";
+  kind: NotifKind;
   /** member id of whoever commented */
   actorId: string;
   targetType: "task" | "idea";
@@ -40,6 +42,14 @@ export function deriveNotifications(opts: {
   const taskMap = new Map(tasks.map((t) => [t.id, t]));
   const ideaMap = new Map(ideas.map((i) => [i.id, i]));
 
+  // targets (task/idea ids) the current user has already commented on — for "reply" alerts
+  const myThreads = new Set(
+    comments
+      .filter((c) => c.authorId === currentUserId)
+      .map((c) => c.taskId ?? c.ideaId)
+      .filter((x): x is string => !!x)
+  );
+
   const out: Notif[] = [];
   for (const c of comments) {
     if (c.authorId === currentUserId) continue; // never notify on your own comment
@@ -48,12 +58,14 @@ export function deriveNotifications(opts: {
     let targetId = "";
     let targetTitle = "";
     let owner: string | undefined;
+    let assignedToMe = false;
     if (c.taskId && taskMap.has(c.taskId)) {
       const t = taskMap.get(c.taskId)!;
       targetType = "task";
       targetId = t.id;
       targetTitle = t.title;
       owner = t.createdBy;
+      assignedToMe = t.assigneeIds.includes(currentUserId);
     } else if (c.ideaId && ideaMap.has(c.ideaId)) {
       const i = ideaMap.get(c.ideaId)!;
       targetType = "idea";
@@ -63,13 +75,17 @@ export function deriveNotifications(opts: {
     }
     if (!targetType) continue;
 
-    const mentionsMe = !!(mentionRe && c.body && mentionRe.test(c.body));
-    const ownedByMe = owner === currentUserId;
-    if (!mentionsMe && !ownedByMe) continue;
+    // pick the most specific reason this comment is relevant to me
+    let kind: NotifKind | null = null;
+    if (mentionRe && c.body && mentionRe.test(c.body)) kind = "mention";
+    else if (owner === currentUserId) kind = "comment";
+    else if (assignedToMe) kind = "assigned";
+    else if (myThreads.has(targetId)) kind = "reply";
+    if (!kind) continue;
 
     out.push({
       id: c.id,
-      kind: mentionsMe ? "mention" : "comment",
+      kind,
       actorId: c.authorId,
       targetType,
       targetId,

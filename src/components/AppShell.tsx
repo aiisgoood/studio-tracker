@@ -10,6 +10,7 @@ import { deriveNotifications, Notif } from "@/lib/notifications";
 import { Sidebar, NavItem } from "./Sidebar";
 import { BoardPage } from "./BoardPage";
 import { IdeasPage } from "./IdeasPage";
+import { MyTasksPage } from "./MyTasksPage";
 import { IdeaUpdate } from "./IdeaDialog";
 import { TeamPage } from "./TeamPage";
 import { SettingsPage } from "./SettingsPage";
@@ -21,11 +22,12 @@ const USER_KEY = "studio-user";
 const THEME_KEY = "studio-theme";
 const NAME_KEY = "studio-name";
 
-type PageId = "board" | "ideas" | "team" | "settings";
+type PageId = "board" | "ideas" | "mine" | "team" | "settings";
 
 const NAV: NavItem[] = [
   { id: "board", label: "Board", icon: "grid" },
   { id: "ideas", label: "Ideas", icon: "bulb" },
+  { id: "mine", label: "My tasks", icon: "user" },
   { id: "team", label: "Team", icon: "users" },
   { id: "settings", label: "Settings", icon: "settings" },
 ];
@@ -50,6 +52,8 @@ export function AppShell() {
   const [notifSeenAt, setNotifSeenAt] = useState<string>("");
   // deep-link target when a notification is clicked
   const [focusComment, setFocusComment] = useState<{ type: "task" | "idea"; id: string } | null>(null);
+  // deep-link target when a "My tasks" row is clicked → open its task dialog on the board
+  const [focusTask, setFocusTask] = useState<string | null>(null);
 
   // local prefs
   useEffect(() => {
@@ -135,17 +139,12 @@ export function AppShell() {
 
   const currentUser = currentUserId ? memberById(currentUserId) : undefined;
 
-  // per-user "last opened notifications" timestamp (device-local). New users start
-  // clean (seen = now) so they aren't flooded by the whole comment history.
+  // per-user "last opened notifications" timestamp (device-local). With no stored value,
+  // default to empty so existing activity shows as unread on first load (the bell lights
+  // up). Opening the bell stamps "seen = now" and clears the badge from then on.
   useEffect(() => {
     if (!currentUserId) return;
-    const key = `studio-notif-seen-${currentUserId}`;
-    let stored = localStorage.getItem(key);
-    if (!stored) {
-      stored = new Date().toISOString();
-      localStorage.setItem(key, stored);
-    }
-    setNotifSeenAt(stored);
+    setNotifSeenAt(localStorage.getItem(`studio-notif-seen-${currentUserId}`) ?? "");
   }, [currentUserId]);
 
   const notifications = useMemo(
@@ -165,6 +164,15 @@ export function AppShell() {
     const now = new Date().toISOString();
     localStorage.setItem(`studio-notif-seen-${currentUserId}`, now);
     setNotifSeenAt(now);
+  }
+
+  const hasUnread = notifications.some((n) => n.createdAt > notifSeenAt);
+
+  function handleOpenTask(id: string) {
+    const t = tasks.find((x) => x.id === id);
+    if (t) setCurrentProjectId(t.projectId);
+    setPage("board");
+    setFocusTask(id);
   }
 
   function handleSelectNotif(n: Notif) {
@@ -395,6 +403,7 @@ export function AppShell() {
       active={page}
       onNavigate={navigate}
       currentUser={currentUser}
+      userGlow={hasUnread}
       isDark={isDark}
       onToggleTheme={toggleTheme}
       onSwitchUser={switchUser}
@@ -420,7 +429,7 @@ export function AppShell() {
             onSeen={markNotifsSeen}
             onSelect={handleSelectNotif}
           />
-          {currentUser && <Avatar member={currentUser} size={28} />}
+          {currentUser && <Avatar member={currentUser} size={28} glow={hasUnread} />}
         </div>
       </div>
 
@@ -501,6 +510,8 @@ export function AppShell() {
                       focusComment?.type === "task" ? focusComment.id : null
                     }
                     onFocusConsumed={() => setFocusComment(null)}
+                    focusTaskId={focusTask}
+                    onTaskFocusConsumed={() => setFocusTask(null)}
                   />
                 )}
                 {page === "ideas" && (
@@ -518,6 +529,15 @@ export function AppShell() {
                       focusComment?.type === "idea" ? focusComment.id : null
                     }
                     onFocusConsumed={() => setFocusComment(null)}
+                  />
+                )}
+                {page === "mine" && (
+                  <MyTasksPage
+                    tasks={tasks}
+                    projects={projects}
+                    currentUserId={currentUserId}
+                    commentCounts={commentCounts}
+                    onOpenTask={handleOpenTask}
                   />
                 )}
                 {page === "team" && <TeamPage tasks={tasks} />}

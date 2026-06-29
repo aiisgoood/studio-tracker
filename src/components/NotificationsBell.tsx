@@ -5,6 +5,20 @@ import { Notif } from "@/lib/notifications";
 import { memberById } from "@/lib/data";
 import { Avatar, Icon } from "./parts";
 
+/** The middle phrase shown between the actor's name and the target title. */
+function notifPhrase(n: Notif): string {
+  switch (n.kind) {
+    case "mention":
+      return "mentioned you in";
+    case "comment":
+      return `commented on your ${n.targetType}`;
+    case "assigned":
+      return "commented on a task you're on";
+    case "reply":
+      return `replied in ${n.targetType === "task" ? "a task" : "an idea"} you're in`;
+  }
+}
+
 function timeAgo(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime();
   const m = Math.floor(diff / 60000);
@@ -102,9 +116,7 @@ export function NotificationsBell({
                       <span className="font-semibold capitalize">
                         {actor?.name ?? "Someone"}
                       </span>{" "}
-                      {n.kind === "mention"
-                        ? "mentioned you in"
-                        : `commented on your ${n.targetType}`}{" "}
+                      {notifPhrase(n)}{" "}
                       <span className="font-medium">“{n.targetTitle}”</span>
                     </p>
                     {n.snippet && (

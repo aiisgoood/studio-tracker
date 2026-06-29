@@ -58,7 +58,9 @@ export function BoardPage({
   onRenameProject,
   onDeleteProject,
   focusCommentTaskId,
+  focusTaskId,
   onFocusConsumed,
+  onTaskFocusConsumed,
 }: {
   tasks: Task[];
   projects: Project[];
@@ -75,7 +77,9 @@ export function BoardPage({
   onRenameProject: (id: string, name: string) => void;
   onDeleteProject: (id: string) => void;
   focusCommentTaskId?: string | null;
+  focusTaskId?: string | null;
   onFocusConsumed?: () => void;
+  onTaskFocusConsumed?: () => void;
 }) {
   const [showNew, setShowNew] = useState(false);
   const [confettiKey, setConfettiKey] = useState(0);
@@ -107,6 +111,15 @@ export function BoardPage({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [focusCommentTaskId]);
+
+  // open a task's dialog when "My tasks" deep-links to it
+  useEffect(() => {
+    if (focusTaskId && tasks.some((t) => t.id === focusTaskId)) {
+      setOpenTaskId(focusTaskId);
+      onTaskFocusConsumed?.();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [focusTaskId]);
 
   function onDragEnd(e: DragEndEvent) {
     const { active, over } = e;

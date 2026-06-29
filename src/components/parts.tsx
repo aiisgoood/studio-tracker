@@ -164,10 +164,13 @@ export function Avatar({
   member,
   size = 28,
   ring = "var(--surface)",
+  glow = false,
 }: {
   member: Member;
   size?: number;
   ring?: string;
+  /** soft accent halo — used to flag "you have unread activity" */
+  glow?: boolean;
 }) {
   return (
     <span
@@ -177,10 +180,15 @@ export function Avatar({
         height: size,
         background: member.color,
         color: member.ink,
-        boxShadow: `0 0 0 2px ${ring}`,
+        boxShadow: glow
+          ? `0 0 0 2px ${ring}, 0 0 0 4px var(--color-primary), 0 0 12px 2px color-mix(in oklab, var(--color-primary) 65%, transparent)`
+          : `0 0 0 2px ${ring}`,
         fontSize: size * 0.42,
       }}
-      className="inline-flex shrink-0 items-center justify-center rounded-full font-semibold"
+      className={[
+        "inline-flex shrink-0 items-center justify-center rounded-full font-semibold",
+        glow ? "animate-pulse" : "",
+      ].join(" ")}
     >
       {member.initial}
     </span>
