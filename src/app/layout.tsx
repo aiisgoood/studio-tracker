@@ -14,11 +14,12 @@ export const metadata: Metadata = {
 };
 
 // Apply the saved theme before paint to avoid a flash of the wrong theme.
+// Dark-first: default to dark unless the user explicitly chose light.
 const themeScript = `
 try {
   var t = localStorage.getItem('studio-theme');
-  if (t === 'dark') document.documentElement.classList.add('dark');
-} catch (e) {}
+  if (t !== 'light') document.documentElement.classList.add('dark');
+} catch (e) { document.documentElement.classList.add('dark'); }
 `;
 
 export default function RootLayout({

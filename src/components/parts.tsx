@@ -261,7 +261,7 @@ export function DuePill({
 
 /* ---------------- Confetti burst (on task → done) ---------------- */
 
-const CONFETTI_COLORS = ["#0a0a0a", "#52525b", "#a1a1aa", "#16a34a", "#d4d4d8", "#16a34a"];
+const CONFETTI_COLORS = ["#ffa586", "#b51a2b", "#384358", "#ffd0b8", "#5bb89a", "#8a93a8"];
 
 export function Confetti() {
   const pieces = Array.from({ length: 14 });

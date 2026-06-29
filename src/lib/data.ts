@@ -5,13 +5,14 @@ import { Member, Project, Task } from "./types";
  * In Stage 2 this is replaced by Supabase (members/projects/tasks tables).
  */
 
-// Monochrome avatars: distinct neutral grays, kept readable in both themes.
+// Avatars drawn from the navy/peach/red palette — distinct per member,
+// readable on both the warm-light and deep-navy surfaces.
 export const MEMBERS: Member[] = [
-  { id: "m_gelika", name: "gelika", initial: "G", color: "#18181b", ink: "#ffffff" },
-  { id: "m_cotne", name: "cotne", initial: "C", color: "#52525b", ink: "#ffffff" },
-  { id: "m_nitch", name: "nitch", initial: "N", color: "#a1a1aa", ink: "#0a0a0a" },
-  { id: "m_abdu", name: "abdu", initial: "A", color: "#3f3f46", ink: "#ffffff" },
-  { id: "m_leqso", name: "leqso", initial: "L", color: "#d4d4d8", ink: "#0a0a0a" },
+  { id: "m_gelika", name: "gelika", initial: "G", color: "#384358", ink: "#ffffff" },
+  { id: "m_cotne", name: "cotne", initial: "C", color: "#b51a2b", ink: "#ffffff" },
+  { id: "m_nitch", name: "nitch", initial: "N", color: "#ffa586", ink: "#1b1e2f" },
+  { id: "m_abdu", name: "abdu", initial: "A", color: "#641a2e", ink: "#ffd7c2" },
+  { id: "m_leqso", name: "leqso", initial: "L", color: "#5a6b8c", ink: "#ffffff" },
 ];
 
 export const PROJECTS: Project[] = [

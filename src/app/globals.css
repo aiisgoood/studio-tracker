@@ -4,129 +4,130 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* ============================================================
-   Soft Pastel theme — lavender page, white cards, a soft violet
-   primary, with mint / butter / lavender accents. Pillowy, light
-   and friendly. Status color (mint / amber / rose) stays reserved
-   for priorities, due dates, idea stages and destructive actions.
+   Dusk theme — deep navy surfaces with a warm peach primary and
+   red / maroon accents (palette: #1B1E2F #242F49 #384358 #FFA586
+   #B51A2B #641A2E). Dark-first; the light mode below is a warm
+   counterpart (navy ink + peach/red accents). The palette has no
+   green/amber, so "done/success" uses an added soft teal-green.
    ============================================================ */
 
-/* ---------------- Light: lavender mist ---------------- */
+/* ---------------- Light: warm paper ---------------- */
 :root {
-  --radius: 1.1rem;
+  --radius: 0.85rem;
 
   /* shadcn semantic tokens */
-  --background: #f4f1fb;
-  --foreground: #3b3357;
+  --background: #faf5f1;
+  --foreground: #1b1e2f;
   --card: #ffffff;
-  --card-foreground: #3b3357;
+  --card-foreground: #1b1e2f;
   --popover: #ffffff;
-  --popover-foreground: #3b3357;
-  --primary: #8b7fd6;
-  --primary-foreground: #ffffff;
-  --secondary: #efeafb;
-  --secondary-foreground: #3b3357;
-  --muted: #efeafb;
-  --muted-foreground: #8e86a8;
-  --accent: #efeafb;
-  --accent-foreground: #3b3357;
-  --destructive: #db5c77;
+  --popover-foreground: #1b1e2f;
+  --primary: #ffa586;
+  --primary-foreground: #1b1e2f;
+  --secondary: #f0eae4;
+  --secondary-foreground: #1b1e2f;
+  --muted: #f0eae4;
+  --muted-foreground: #6b7185;
+  --accent: #f0eae4;
+  --accent-foreground: #1b1e2f;
+  --destructive: #b51a2b;
   --destructive-foreground: #ffffff;
-  --border: #e9e3f6;
-  --input: #e9e3f6;
-  --ring: #8b7fd6;
+  --border: #ece3db;
+  --input: #ece3db;
+  --ring: #ffa586;
 
-  --sidebar: #f0ebfa;
-  --sidebar-foreground: #3b3357;
-  --sidebar-primary: #8b7fd6;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #e4dcf6;
-  --sidebar-accent-foreground: #3b3357;
-  --sidebar-border: #e3dbf4;
-  --sidebar-ring: #8b7fd6;
+  --sidebar: #f4eee8;
+  --sidebar-foreground: #1b1e2f;
+  --sidebar-primary: #ffa586;
+  --sidebar-primary-foreground: #1b1e2f;
+  --sidebar-accent: #ece3db;
+  --sidebar-accent-foreground: #1b1e2f;
+  --sidebar-border: #e7ddd3;
+  --sidebar-ring: #ffa586;
 
   /* extra aliases used by existing markup */
   --surface: #ffffff;
-  --surface-2: #efeafb;
-  --line: #e9e3f6;
-  --line-strong: #d9cff0;
-  --ink: #3b3357;
-  --primary-hover: #7a6ccb;
+  --surface-2: #f0eae4;
+  --line: #ece3db;
+  --line-strong: #ddd0c5;
+  --ink: #1b1e2f;
+  --primary-hover: #f2926e;
 
-  /* domain accents — soft pastel status colors. */
-  --todo: #a99fc9;
-  --doing: #e0a23d;
-  --done: #5fb894;
-  --amber-bg: #fbf0dd;
-  --amber-ink: #9a6b1e;
-  --amber-line: #f2e0be;
-  --sage-bg: #dff3e9;
-  --sage-ink: #2f6b4f;
-  --sage-line: #c3e7d5;
-  --slate-bg: #efeafb;
-  --slate-ink: #5b4f8a;
-  --slate-line: #e1d8f5;
-  --prio-low: #5fb894;
-  --prio-medium: #e0a23d;
-  --prio-urgent: #db5c77;
-  --danger-bg: #fbe6ec;
-  --danger-ink: #b04a66;
+  /* domain accents — navy/peach/red palette + teal-green for done. */
+  --todo: #8a93a8;
+  --doing: #e8843f;
+  --done: #2e9e7e;
+  --amber-bg: #fcede2;
+  --amber-ink: #b5602a;
+  --amber-line: #f3dcc9;
+  --sage-bg: #e2f3ec;
+  --sage-ink: #1f7d62;
+  --sage-line: #c8e9da;
+  --slate-bg: #eef0f5;
+  --slate-ink: #3a4663;
+  --slate-line: #e0e4ee;
+  --prio-low: #2e9e7e;
+  --prio-medium: #e8843f;
+  --prio-urgent: #b51a2b;
+  --danger-bg: #fbe7e7;
+  --danger-ink: #b51a2b;
 }
 
-/* ---------------- Dark: midnight lavender ---------------- */
+/* ---------------- Dark: deep navy (hero) ---------------- */
 .dark {
-  --background: #1a1726;
-  --foreground: #ece7f7;
-  --card: #221e30;
-  --card-foreground: #ece7f7;
-  --popover: #221e30;
-  --popover-foreground: #ece7f7;
-  --primary: #a99bea;
-  --primary-foreground: #1a1726;
-  --secondary: #2a2540;
-  --secondary-foreground: #ece7f7;
-  --muted: #2a2540;
-  --muted-foreground: #a79fc2;
-  --accent: #2a2540;
-  --accent-foreground: #ece7f7;
-  --destructive: #f08aa6;
-  --destructive-foreground: #1a1726;
-  --border: #332c49;
-  --input: #332c49;
-  --ring: #a99bea;
+  --background: #1b1e2f;
+  --foreground: #e9edf5;
+  --card: #242f49;
+  --card-foreground: #e9edf5;
+  --popover: #242f49;
+  --popover-foreground: #e9edf5;
+  --primary: #ffa586;
+  --primary-foreground: #1b1e2f;
+  --secondary: #2e3953;
+  --secondary-foreground: #e9edf5;
+  --muted: #2e3953;
+  --muted-foreground: #97a1b8;
+  --accent: #2e3953;
+  --accent-foreground: #e9edf5;
+  --destructive: #d9485c;
+  --destructive-foreground: #ffffff;
+  --border: #384358;
+  --input: #384358;
+  --ring: #ffa586;
 
-  --sidebar: #16131f;
-  --sidebar-foreground: #ece7f7;
-  --sidebar-primary: #a99bea;
-  --sidebar-primary-foreground: #1a1726;
-  --sidebar-accent: #2a2540;
-  --sidebar-accent-foreground: #ece7f7;
-  --sidebar-border: #332c49;
-  --sidebar-ring: #a99bea;
+  --sidebar: #16192a;
+  --sidebar-foreground: #e9edf5;
+  --sidebar-primary: #ffa586;
+  --sidebar-primary-foreground: #1b1e2f;
+  --sidebar-accent: #2e3953;
+  --sidebar-accent-foreground: #e9edf5;
+  --sidebar-border: #2a3349;
+  --sidebar-ring: #ffa586;
 
-  --surface: #221e30;
-  --surface-2: #2a2540;
-  --line: #332c49;
-  --line-strong: #443b5f;
-  --ink: #ece7f7;
-  --primary-hover: #b9adf0;
+  --surface: #242f49;
+  --surface-2: #2e3953;
+  --line: #384358;
+  --line-strong: #46546b;
+  --ink: #e9edf5;
+  --primary-hover: #f2926e;
 
-  --todo: #8b82ad;
-  --doing: #f0c06a;
-  --done: #74d3a8;
-  --amber-bg: #2e2310;
-  --amber-ink: #f0c06a;
-  --amber-line: #463715;
-  --sage-bg: #11281c;
-  --sage-ink: #74d3a8;
-  --sage-line: #1f4632;
-  --slate-bg: #2a2540;
-  --slate-ink: #d7cdf2;
-  --slate-line: #3a3257;
-  --prio-low: #74d3a8;
-  --prio-medium: #f0c06a;
-  --prio-urgent: #f08aa6;
-  --danger-bg: #321824;
-  --danger-ink: #f08aa6;
+  --todo: #7c8aa6;
+  --doing: #ffa586;
+  --done: #5bb89a;
+  --amber-bg: #3a2a1a;
+  --amber-ink: #ffc39e;
+  --amber-line: #4a3622;
+  --sage-bg: #15302a;
+  --sage-ink: #7fd3b8;
+  --sage-line: #1f4638;
+  --slate-bg: #2e3953;
+  --slate-ink: #c7d0e2;
+  --slate-line: #3a4663;
+  --prio-low: #5bb89a;
+  --prio-medium: #f0b27a;
+  --prio-urgent: #d9485c;
+  --danger-bg: #3d1622;
+  --danger-ink: #f09aa8;
 }
 
 @theme inline {
